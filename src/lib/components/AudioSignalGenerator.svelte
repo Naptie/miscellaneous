@@ -99,7 +99,7 @@
 
 <div class="card bg-base-100 w-full max-w-2xl shadow-xl">
   <div class="card-body">
-    <h2 class="card-title mb-4 justify-center text-2xl">🎵 听力测试信号发生器</h2>
+    <h2 class="card-title mb-4 justify-center text-center text-2xl">🎵 听力测试信号发生器</h2>
 
     <!-- 频率控制 -->
     <div class="mb-6 flex w-full flex-row items-center justify-between gap-2">
@@ -116,7 +116,7 @@
         class="range range-primary w-3/4"
         step="10"
       />
-      <span class="label-text-alt badge badge-primary w-1/6 min-w-28">{formatFrequency}</span>
+      <span class="label-text-alt badge badge-primary w-1/6 min-w-20">{formatFrequency}</span>
     </div>
 
     <!-- 音量控制 -->
@@ -134,7 +134,7 @@
         class="range range-secondary w-3/4"
         step="1"
       />
-      <span class="label-text-alt badge badge-secondary w-1/6 min-w-28">{formatVolume}</span>
+      <span class="label-text-alt badge badge-secondary w-1/6 min-w-20">{formatVolume}</span>
     </div>
 
     <!-- 当前参数显示 -->
