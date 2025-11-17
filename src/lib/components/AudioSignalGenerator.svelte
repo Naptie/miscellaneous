@@ -116,7 +116,7 @@
         class="range range-primary w-3/4"
         step="10"
       />
-      <span class="label-text-alt badge badge-primary w-1/6">{formatFrequency}</span>
+      <span class="label-text-alt badge badge-primary w-1/6 min-w-28">{formatFrequency}</span>
     </div>
 
     <!-- 音量控制 -->
@@ -134,7 +134,7 @@
         class="range range-secondary w-3/4"
         step="1"
       />
-      <span class="label-text-alt badge badge-secondary w-1/6">{formatVolume}</span>
+      <span class="label-text-alt badge badge-secondary w-1/6 min-w-28">{formatVolume}</span>
     </div>
 
     <!-- 当前参数显示 -->
