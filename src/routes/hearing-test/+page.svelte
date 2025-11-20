@@ -1,22 +1,19 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
 
-  // Runes状态管理
   let frequency = $state(1000); // 频率 (Hz)
   let volume = $state(50); // 音量 (0-100)
   let isPlaying = $state(false);
+
+  let formatFrequency = $derived(
+    frequency >= 1000 ? `${(frequency / 1000).toFixed(1)} kHz` : `${frequency} Hz`
+  );
+  let formatVolume = $derived(`${volume}%`);
 
   // 音频上下文和振荡器
   let audioContext: AudioContext | null = null;
   let oscillator: OscillatorNode | null = null;
   let gainNode: GainNode | null = null;
-
-  // 频率和音量的显示格式化
-  const formatFrequency = $derived(
-    frequency >= 1000 ? `${(frequency / 1000).toFixed(1)} kHz` : `${frequency} Hz`
-  );
-
-  const formatVolume = $derived(`${volume}%`);
 
   // 初始化音频上下文
   function initAudioContext() {
@@ -122,7 +119,7 @@
           max="20000"
           bind:value={frequency}
           oninput={updateFrequency}
-          class="range range-primary w-3/4"
+          class="range hover:range-primary w-3/4 transition"
           step="1"
         />
         <span class="label-text-alt badge badge-primary w-1/6 min-w-20">{formatFrequency}</span>
@@ -140,7 +137,7 @@
           max="100"
           bind:value={volume}
           oninput={updateVolume}
-          class="range range-secondary w-3/4"
+          class="range hover:range-secondary w-3/4 transition"
           step="1"
         />
         <span class="label-text-alt badge badge-secondary w-1/6 min-w-20">{formatVolume}</span>
@@ -234,21 +231,4 @@
       </div>
     </div>
   </div>
-
-  <style>
-    /* 自定义样式增强 */
-    .range {
-      height: 0.5rem;
-    }
-
-    .range::-webkit-slider-thumb {
-      height: 1.5rem;
-      width: 1.5rem;
-    }
-
-    .range::-moz-range-thumb {
-      height: 1.5rem;
-      width: 1.5rem;
-    }
-  </style>
 </div>
