@@ -1,3 +1,8 @@
+<script>
+  import { goto } from '$app/navigation';
+  import { resolve } from 'path';
+</script>
+
 <div class="hero bg-base-200 min-h-screen">
   <div class="hero-content text-center">
     <div class="max-w-md">
@@ -6,7 +11,9 @@
         Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
         quasi. In deleniti eaque aut repudiandae et a id nisi.
       </p>
-      <button class="btn btn-primary">Get Started</button>
+      <button class="btn btn-primary" onclick={() => goto(resolve('/hearing-test'))}
+        >Get Started</button
+      >
     </div>
   </div>
 </div>
