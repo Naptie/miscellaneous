@@ -30,7 +30,7 @@
         const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
         const url = URL.createObjectURL(audioBlob);
         recordedAudioUrl = url;
-        
+
         // Convert to AudioBuffer
         const arrayBuffer = await audioBlob.arrayBuffer();
         if (audioContext) {
@@ -40,7 +40,7 @@
         }
 
         // Stop all tracks
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach((track) => track.stop());
         if (recordingInterval) {
           clearInterval(recordingInterval);
           recordingInterval = null;
@@ -49,7 +49,7 @@
 
       mediaRecorder.start();
       isRecording = true;
-      
+
       // Update recording time
       recordingInterval = window.setInterval(() => {
         recordingTime += 1;
@@ -98,9 +98,7 @@
   <div class="card bg-base-200">
     <div class="card-body">
       <h3 class="card-title">🎤 录制音频</h3>
-      <p class="text-base-content/70 text-sm">
-        使用麦克风录制语音或音乐信号（需要麦克风权限）
-      </p>
+      <p class="text-base-content/70 text-sm">使用麦克风录制语音或音乐信号（需要麦克风权限）</p>
 
       <div class="flex items-center justify-between gap-4">
         <div class="flex items-center gap-4">
@@ -180,9 +178,7 @@
   <div class="card bg-base-200">
     <div class="card-body">
       <h3 class="card-title">📁 上传音频文件</h3>
-      <p class="text-base-content/70 text-sm">
-        支持常见音频格式：MP3, WAV, OGG, FLAC 等
-      </p>
+      <p class="text-base-content/70 text-sm">支持常见音频格式：MP3, WAV, OGG, FLAC 等</p>
 
       <div class="form-control w-full">
         <input

@@ -12,7 +12,10 @@
   let audioContext: AudioContext | null = $state(null);
 
   onMount(() => {
-    audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const AudioContextClass =
+      window.AudioContext ||
+      (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    audioContext = new AudioContextClass();
   });
 
   onDestroy(() => {
@@ -94,13 +97,13 @@
       <div class="card bg-base-100 mt-6 shadow-xl">
         <div class="card-body">
           <h3 class="card-title">频谱分析器</h3>
-          <SpectrumAnalyzer {audioContext} {audioBuffer} />
+          <SpectrumAnalyzer {audioBuffer} />
         </div>
       </div>
     {/if}
 
     <!-- Experiment Instructions -->
-    <div class="collapse collapse-arrow bg-base-100 mt-6 shadow-xl">
+    <div class="collapse-arrow bg-base-100 collapse mt-6 shadow-xl">
       <input type="checkbox" />
       <div class="collapse-title text-xl font-medium">📖 实验说明</div>
       <div class="collapse-content">

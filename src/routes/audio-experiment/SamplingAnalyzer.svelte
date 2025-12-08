@@ -18,7 +18,7 @@
     { value: 16000, label: '16 kHz', description: '宽带语音' },
     { value: 22050, label: '22.05 kHz', description: '中等质量' },
     { value: 44100, label: '44.1 kHz (CD质量)', description: '标准音乐质量' },
-    { value: 48000, label: '48 kHz', description: '专业音频' },
+    { value: 48000, label: '48 kHz', description: '专业音频' }
   ];
 
   const bitDepthOptions = [
@@ -26,13 +26,12 @@
     { value: 8, label: '8-bit', description: '低质量' },
     { value: 12, label: '12-bit', description: '中等质量' },
     { value: 16, label: '16-bit (CD)', description: '标准质量' },
-    { value: 24, label: '24-bit', description: '高质量' },
+    { value: 24, label: '24-bit', description: '高质量' }
   ];
 
   function resampleAudio() {
     if (!audioBuffer || !audioContext) return;
 
-    const originalSampleRate = audioBuffer.sampleRate;
     const channels = audioBuffer.numberOfChannels;
     const duration = audioBuffer.duration;
     const newLength = Math.ceil(duration * targetSampleRate);
@@ -67,7 +66,7 @@
 
   function playOriginal() {
     if (!audioBuffer || !audioContext) return;
-    
+
     stopPlayback();
     currentSource = audioContext.createBufferSource();
     currentSource.buffer = audioBuffer;
@@ -82,7 +81,7 @@
 
   function playResampled() {
     if (!resampledBuffer || !audioContext) return;
-    
+
     stopPlayback();
     currentSource = audioContext.createBufferSource();
     currentSource.buffer = resampledBuffer;
@@ -100,7 +99,7 @@
       try {
         currentSource.stop();
         currentSource.disconnect();
-      } catch (e) {
+      } catch {
         // Already stopped
       }
       currentSource = null;
@@ -140,7 +139,7 @@
     <div class="card bg-base-200">
       <div class="card-body">
         <h3 class="card-title">原始音频信息</h3>
-        <div class="stats stats-vertical shadow lg:stats-horizontal">
+        <div class="stats stats-vertical lg:stats-horizontal shadow">
           <div class="stat">
             <div class="stat-title">采样率</div>
             <div class="stat-value text-primary text-2xl">{audioBuffer.sampleRate} Hz</div>
@@ -184,7 +183,7 @@
             bind:value={targetSampleRate}
             onchange={resampleAudio}
           >
-            {#each sampleRatePresets as preset}
+            {#each sampleRatePresets as preset (preset.value)}
               <option value={preset.value}>
                 {preset.label} - {preset.description}
               </option>
@@ -203,7 +202,7 @@
             bind:value={bitDepth}
             onchange={resampleAudio}
           >
-            {#each bitDepthOptions as option}
+            {#each bitDepthOptions as option (option.value)}
               <option value={option.value}>
                 {option.label} - {option.description}
               </option>
@@ -214,7 +213,7 @@
         <div class="divider"></div>
 
         {#if resampledBuffer}
-          <div class="stats stats-vertical shadow lg:stats-horizontal">
+          <div class="stats stats-vertical lg:stats-horizontal shadow">
             <div class="stat">
               <div class="stat-title">重采样率</div>
               <div class="stat-value text-primary text-2xl">{targetSampleRate} Hz</div>
@@ -259,10 +258,12 @@
           <h4>语音 vs 音乐的采样率要求</h4>
           <ul>
             <li>
-              <strong>语音信号</strong>：主要频率集中在300Hz-3.4kHz，因此8kHz采样率即可满足电话质量要求
+              <strong>语音信号</strong
+              >：主要频率集中在300Hz-3.4kHz，因此8kHz采样率即可满足电话质量要求
             </li>
             <li>
-              <strong>音乐信号</strong>：包含更丰富的高频成分和谐波，需要44.1kHz或更高采样率以保持音质
+              <strong>音乐信号</strong
+              >：包含更丰富的高频成分和谐波，需要44.1kHz或更高采样率以保持音质
             </li>
           </ul>
 

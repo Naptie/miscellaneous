@@ -18,7 +18,10 @@
   // 初始化音频上下文
   function initAudioContext() {
     if (!audioContext) {
-      audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const AudioContextClass =
+        window.AudioContext ||
+        (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      audioContext = new AudioContextClass();
     }
   }
 

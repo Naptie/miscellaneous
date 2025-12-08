@@ -23,7 +23,7 @@
     { value: 'bandpass', label: '带通滤波器', description: '保留特定频段' },
     { value: 'lowshelf', label: '低频架式', description: '增强/衰减低频' },
     { value: 'highshelf', label: '高频架式', description: '增强/衰减高频' },
-    { value: 'peaking', label: '峰值滤波器', description: '调整特定频段' },
+    { value: 'peaking', label: '峰值滤波器', description: '调整特定频段' }
   ];
 
   function addNoise() {
@@ -79,7 +79,7 @@
   function playOriginal() {
     if (!audioBuffer || !audioContext) return;
     stopPlayback();
-    
+
     currentSource = audioContext.createBufferSource();
     currentSource.buffer = audioBuffer;
     currentSource.connect(audioContext.destination);
@@ -94,7 +94,7 @@
   function playNoisy() {
     if (!noisyBuffer || !audioContext) return;
     stopPlayback();
-    
+
     currentSource = audioContext.createBufferSource();
     currentSource.buffer = noisyBuffer;
     currentSource.connect(audioContext.destination);
@@ -109,7 +109,7 @@
   function playFiltered() {
     if (!filteredBuffer || !audioContext) return;
     stopPlayback();
-    
+
     currentSource = audioContext.createBufferSource();
     currentSource.buffer = filteredBuffer;
     currentSource.connect(audioContext.destination);
@@ -126,37 +126,12 @@
       try {
         currentSource.stop();
         currentSource.disconnect();
-      } catch (e) {
+      } catch {
         // Already stopped
       }
       currentSource = null;
     }
     isPlaying = null;
-  }
-
-  function calculateFrequencyResponse() {
-    if (!audioContext) return { magnitude: [], phase: [] };
-
-    const filter = audioContext.createBiquadFilter();
-    filter.type = filterType;
-    filter.frequency.value = noiseFrequency;
-    filter.Q.value = filterQ;
-
-    const frequencyArray = new Float32Array(100);
-    const magResponse = new Float32Array(100);
-    const phaseResponse = new Float32Array(100);
-
-    for (let i = 0; i < 100; i++) {
-      frequencyArray[i] = 20 * Math.pow(10, (i / 100) * Math.log10(20000 / 20));
-    }
-
-    filter.getFrequencyResponse(frequencyArray, magResponse, phaseResponse);
-
-    return { 
-      frequencies: Array.from(frequencyArray),
-      magnitude: Array.from(magResponse),
-      phase: Array.from(phaseResponse)
-    };
   }
 </script>
 
@@ -185,9 +160,7 @@
     <div class="card bg-base-200">
       <div class="card-body">
         <h3 class="card-title">添加噪声信号</h3>
-        <p class="text-base-content/70 text-sm">
-          模拟50Hz工频干扰或其他单频噪声
-        </p>
+        <p class="text-base-content/70 text-sm">模拟50Hz工频干扰或其他单频噪声</p>
 
         <div class="form-control">
           <label class="label" for="noise-frequency">
@@ -280,7 +253,7 @@
               bind:value={filterType}
               onchange={applyFilter}
             >
-              {#each filterTypes as type}
+              {#each filterTypes as type (type.value)}
                 <option value={type.value}>
                   {type.label} - {type.description}
                 </option>
@@ -303,9 +276,7 @@
               oninput={applyFilter}
               class="range range-accent"
             />
-            <div class="text-xs opacity-70">
-              Q值越高，滤波器带宽越窄，选择性越强
-            </div>
+            <div class="text-xs opacity-70">Q值越高，滤波器带宽越窄，选择性越强</div>
           </div>
 
           <div class="alert alert-info">

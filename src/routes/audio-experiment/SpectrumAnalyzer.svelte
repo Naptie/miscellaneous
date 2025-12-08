@@ -2,11 +2,10 @@
   import { onMount } from 'svelte';
 
   interface Props {
-    audioContext: AudioContext | null;
     audioBuffer: AudioBuffer | null;
   }
 
-  let { audioContext, audioBuffer }: Props = $props();
+  let { audioBuffer }: Props = $props();
 
   let canvasElement: HTMLCanvasElement;
   let fftSize = $state(2048);
@@ -17,7 +16,7 @@
     { value: 1024, label: '1024' },
     { value: 2048, label: '2048' },
     { value: 4096, label: '4096' },
-    { value: 8192, label: '8192' },
+    { value: 8192, label: '8192' }
   ];
 
   function analyzeSpectrum() {
@@ -45,22 +44,21 @@
 
     // Perform FFT (simplified using browser's built-in)
     const real = new Float32Array(windowed);
-    const imag = new Float32Array(fftSize);
-    
+
     // Simple DFT implementation (note: real FFT would be more efficient)
     const magnitude = new Float32Array(fftSize / 2);
     const phase = new Float32Array(fftSize / 2);
-    
+
     for (let k = 0; k < fftSize / 2; k++) {
       let realSum = 0;
       let imagSum = 0;
-      
+
       for (let n = 0; n < fftSize; n++) {
         const angle = (-2 * Math.PI * k * n) / fftSize;
         realSum += real[n] * Math.cos(angle);
         imagSum += real[n] * Math.sin(angle);
       }
-      
+
       magnitude[k] = Math.sqrt(realSum * realSum + imagSum * imagSum) / fftSize;
       phase[k] = Math.atan2(imagSum, realSum);
     }
@@ -89,11 +87,7 @@
       const binIndex = Math.floor((freq * fftSize) / sampleRate);
       const x = (binIndex / (fftSize / 2)) * width;
       if (x < width) {
-        ctx.fillText(
-          freq >= 1000 ? `${freq / 1000}k` : `${freq}`,
-          x - 15,
-          height - 5
-        );
+        ctx.fillText(freq >= 1000 ? `${freq / 1000}k` : `${freq}`, x - 15, height - 5);
       }
     }
 
@@ -102,11 +96,11 @@
       ctx.strokeStyle = '#ff6b6b';
       ctx.lineWidth = 2;
       ctx.beginPath();
-      
+
       for (let i = 0; i < magnitude.length; i++) {
         const x = (i / magnitude.length) * width;
         const y = halfHeight - (phase[i] / Math.PI) * halfHeight * 0.8;
-        
+
         if (i === 0) {
           ctx.moveTo(x, y);
         } else {
@@ -119,14 +113,14 @@
       ctx.strokeStyle = '#4ecdc4';
       ctx.lineWidth = 2;
       ctx.beginPath();
-      
+
       const maxMag = Math.max(...magnitude);
       for (let i = 0; i < magnitude.length; i++) {
         const x = (i / magnitude.length) * width;
         const normalized = magnitude[i] / (maxMag || 1);
         const dbValue = 20 * Math.log10(normalized + 0.0001);
         const y = height - ((dbValue + 60) / 60) * halfHeight;
-        
+
         if (i === 0) {
           ctx.moveTo(x, y);
         } else {
@@ -138,13 +132,13 @@
       // Draw magnitude spectrum as bars
       const barWidth = width / (fftSize / 2);
       const maxMag = Math.max(...magnitude);
-      
+
       for (let i = 0; i < magnitude.length; i++) {
         const x = i * barWidth;
         const normalized = magnitude[i] / (maxMag || 1);
         const dbValue = 20 * Math.log10(normalized + 0.0001);
         const barHeight = ((dbValue + 60) / 60) * height;
-        
+
         // Color gradient based on frequency
         const hue = (i / magnitude.length) * 280;
         ctx.fillStyle = `hsl(${hue}, 70%, 50%)`;
@@ -184,7 +178,7 @@
         bind:value={fftSize}
         onchange={analyzeSpectrum}
       >
-        {#each fftSizeOptions as option}
+        {#each fftSizeOptions as option (option.value)}
           <option value={option.value}>{option.label}</option>
         {/each}
       </select>
@@ -221,7 +215,7 @@
     </button>
   </div>
 
-  <div class="rounded-lg bg-base-300 p-2">
+  <div class="bg-base-300 rounded-lg p-2">
     <canvas
       bind:this={canvasElement}
       width="800"
@@ -253,7 +247,7 @@
     </div>
   </div>
 
-  <div class="stats stats-vertical shadow lg:stats-horizontal">
+  <div class="stats stats-vertical lg:stats-horizontal shadow">
     <div class="stat">
       <div class="stat-title">FFT大小</div>
       <div class="stat-value text-2xl">{fftSize}</div>

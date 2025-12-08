@@ -30,12 +30,12 @@
       // Comb filter: y(n) = x(n) + a*x(n-R)
       for (let i = 0; i < length; i++) {
         let sample = 0;
-        
+
         // Original signal
         if (i < input.length) {
           sample += input[i];
         }
-        
+
         // Delayed signal
         if (i >= delayInSamples) {
           const delayedIndex = i - delayInSamples;
@@ -43,7 +43,7 @@
             sample += echoDecay * input[delayedIndex];
           }
         }
-        
+
         output[i] = sample;
       }
     }
@@ -62,29 +62,29 @@
     for (let channel = 0; channel < channels; channel++) {
       const input = audioBuffer.getChannelData(channel);
       const output = echoBuffer.getChannelData(channel);
-      
+
       // All-pass filter: H(z) = (α + z^-R) / (1 + α*z^-R)
       // Time domain: y(n) = α*x(n) + x(n-R) - α*y(n-R)
       const alpha = echoDecay;
 
       for (let i = 0; i < length; i++) {
         let sample = 0;
-        
+
         // α*x(n)
         if (i < input.length) {
           sample += alpha * input[i];
         }
-        
+
         // x(n-R)
         if (i >= delayInSamples && i - delayInSamples < input.length) {
           sample += input[i - delayInSamples];
         }
-        
+
         // -α*y(n-R)
         if (i >= delayInSamples) {
           sample -= alpha * output[i - delayInSamples];
         }
-        
+
         output[i] = sample;
       }
     }
@@ -101,7 +101,7 @@
   function playOriginal() {
     if (!audioBuffer || !audioContext) return;
     stopPlayback();
-    
+
     currentSource = audioContext.createBufferSource();
     currentSource.buffer = audioBuffer;
     currentSource.connect(audioContext.destination);
@@ -116,7 +116,7 @@
   function playEcho() {
     if (!echoBuffer || !audioContext) return;
     stopPlayback();
-    
+
     currentSource = audioContext.createBufferSource();
     currentSource.buffer = echoBuffer;
     currentSource.connect(audioContext.destination);
@@ -133,7 +133,7 @@
       try {
         currentSource.stop();
         currentSource.disconnect();
-      } catch (e) {
+      } catch {
         // Already stopped
       }
       currentSource = null;
@@ -251,13 +251,11 @@
             oninput={applyEcho}
             class="range range-secondary"
           />
-          <div class="text-xs opacity-70">
-            α 必须小于 1 以保证系统稳定性
-          </div>
+          <div class="text-xs opacity-70">α 必须小于 1 以保证系统稳定性</div>
         </div>
 
         {#if echoBuffer}
-          <div class="stats stats-vertical shadow lg:stats-horizontal">
+          <div class="stats stats-vertical lg:stats-horizontal shadow">
             <div class="stat">
               <div class="stat-title">延迟采样点</div>
               <div class="stat-value text-primary text-2xl">
@@ -355,10 +353,12 @@
         <div class="prose mt-4 max-w-none">
           <h4>为什么会有区别？</h4>
           <p>
-            <strong>梳状滤波器</strong>是前馈结构（FIR），只使用输入信号的延迟副本。这产生了单次清晰的回声，但在频域会形成周期性的"梳齿"频率响应，某些频率被增强，某些被削弱。
+            <strong>梳状滤波器</strong
+            >是前馈结构（FIR），只使用输入信号的延迟副本。这产生了单次清晰的回声，但在频域会形成周期性的"梳齿"频率响应，某些频率被增强，某些被削弱。
           </p>
           <p>
-            <strong>全通滤波器</strong>是反馈结构（IIR），使用了输出信号的反馈。这产生了多次衰减的回声，类似真实环境中的混响。其特点是保持所有频率的幅度不变，只改变相位，因此称为"全通"。
+            <strong>全通滤波器</strong
+            >是反馈结构（IIR），使用了输出信号的反馈。这产生了多次衰减的回声，类似真实环境中的混响。其特点是保持所有频率的幅度不变，只改变相位，因此称为"全通"。
           </p>
 
           <h4>实际应用建议</h4>

@@ -23,7 +23,7 @@
     { frequency: 3000, gain: 0, q: 1.0, type: 'peaking', enabled: true },
     { frequency: 6000, gain: 0, q: 1.0, type: 'peaking', enabled: true },
     { frequency: 12000, gain: 0, q: 1.0, type: 'peaking', enabled: true },
-    { frequency: 14000, gain: 0, q: 1.0, type: 'highshelf', enabled: true },
+    { frequency: 14000, gain: 0, q: 1.0, type: 'highshelf', enabled: true }
   ]);
 
   let isPlaying = $state<'original' | 'equalized' | null>(null);
@@ -40,7 +40,7 @@
     rock: [4, 2, -1, -2, -1, 1, 3, 4, 4],
     jazz: [2, 2, 0, 1, -1, -1, 0, 1, 2],
     pop: [2, 1, 0, 1, 2, 1, 0, -1, -2],
-    electronic: [3, 2, 0, -1, -2, 0, 1, 3, 4],
+    electronic: [3, 2, 0, -1, -2, 0, 1, 3, 4]
   };
 
   function applyEqualizer() {
@@ -97,7 +97,7 @@
   function playOriginal() {
     if (!audioBuffer || !audioContext) return;
     stopPlayback();
-    
+
     currentSource = audioContext.createBufferSource();
     currentSource.buffer = audioBuffer;
     currentSource.connect(audioContext.destination);
@@ -112,7 +112,7 @@
   function playEqualized() {
     if (!equalizedBuffer || !audioContext) return;
     stopPlayback();
-    
+
     currentSource = audioContext.createBufferSource();
     currentSource.buffer = equalizedBuffer;
     currentSource.connect(audioContext.destination);
@@ -129,7 +129,7 @@
       try {
         currentSource.stop();
         currentSource.disconnect();
-      } catch (e) {
+      } catch {
         // Already stopped
       }
       currentSource = null;
@@ -147,7 +147,7 @@
       'warning',
       'error',
       'primary',
-      'secondary',
+      'secondary'
     ];
     return colors[index % colors.length];
   }
@@ -185,7 +185,7 @@
       <div class="card-body">
         <h3 class="card-title">预设效果</h3>
         <div class="flex flex-wrap gap-2">
-          {#each Object.keys(presets) as preset}
+          {#each Object.keys(presets) as preset (preset)}
             <button
               class="btn btn-sm {presetName === preset ? 'btn-primary' : 'btn-outline'}"
               onclick={() => applyPreset(preset)}
@@ -202,9 +202,9 @@
     <div class="card bg-base-200">
       <div class="card-body">
         <h3 class="card-title">频段调节</h3>
-        
+
         <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-          {#each eqBands as band, index}
+          {#each eqBands as band, index (band.frequency)}
             <div class="card bg-base-100 shadow-md">
               <div class="card-body p-4">
                 <div class="flex items-center justify-between">
@@ -275,17 +275,15 @@
     <div class="card bg-base-200">
       <div class="card-body">
         <h3 class="card-title">频率响应曲线</h3>
-        <div class="flex h-64 items-end justify-around gap-1 bg-base-300 p-4">
-          {#each eqBands as band, index}
+        <div class="bg-base-300 flex h-64 items-end justify-around gap-1 p-4">
+          {#each eqBands as band, index (band.frequency)}
             <div class="flex flex-col items-center gap-1">
               <div
                 class="w-8 bg-{getBandColor(index)} transition-all duration-300"
                 style="height: {((band.gain + 12) / 24) * 100}%"
               ></div>
               <div class="text-xs">
-                {band.frequency >= 1000
-                  ? `${(band.frequency / 1000).toFixed(1)}k`
-                  : band.frequency}
+                {band.frequency >= 1000 ? `${(band.frequency / 1000).toFixed(1)}k` : band.frequency}
               </div>
             </div>
           {/each}
