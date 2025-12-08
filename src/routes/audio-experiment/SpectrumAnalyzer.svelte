@@ -9,7 +9,6 @@
 
   let canvasElement: HTMLCanvasElement;
   let fftSize = $state(2048);
-  let showPhase = $state(false);
 
   const fftSizeOptions = [
     { value: 512, label: '512' },
@@ -22,7 +21,6 @@
   function analyzeSpectrum() {
     if (!audioBuffer || !canvasElement) return;
 
-    const channelData = audioBuffer.getChannelData(0);
     const sampleRate = audioBuffer.sampleRate;
     const canvas = canvasElement;
     const ctx = canvas.getContext('2d');
@@ -31,42 +29,41 @@
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Take a sample from the middle of the audio
+    // Get audio data from buffer
+    const channelData = audioBuffer.getChannelData(0);
     const startSample = Math.floor((channelData.length - fftSize) / 2);
-    const samples = channelData.slice(startSample, startSample + fftSize);
 
-    // Apply Hamming window
+    // Apply Hamming window and compute magnitude manually for better visualization
     const windowed = new Float32Array(fftSize);
     for (let i = 0; i < fftSize; i++) {
-      const windowValue = 0.54 - 0.46 * Math.cos((2 * Math.PI * i) / (fftSize - 1));
-      windowed[i] = samples[i] * windowValue;
+      const sampleIndex = startSample + i;
+      if (sampleIndex < channelData.length) {
+        const windowValue = 0.54 - 0.46 * Math.cos((2 * Math.PI * i) / (fftSize - 1));
+        windowed[i] = channelData[sampleIndex] * windowValue;
+      }
     }
 
-    // Perform FFT (simplified using browser's built-in)
-    const real = new Float32Array(windowed);
-
-    // Simple DFT implementation (note: real FFT would be more efficient)
+    // Simple magnitude calculation (optimized)
     const magnitude = new Float32Array(fftSize / 2);
-    const phase = new Float32Array(fftSize / 2);
 
+    // Use a simplified approach: compute power spectrum
     for (let k = 0; k < fftSize / 2; k++) {
       let realSum = 0;
       let imagSum = 0;
+      const step = Math.max(1, Math.floor(fftSize / 256)); // Sample points for performance
 
-      for (let n = 0; n < fftSize; n++) {
+      for (let n = 0; n < fftSize; n += step) {
         const angle = (-2 * Math.PI * k * n) / fftSize;
-        realSum += real[n] * Math.cos(angle);
-        imagSum += real[n] * Math.sin(angle);
+        realSum += windowed[n] * Math.cos(angle);
+        imagSum += windowed[n] * Math.sin(angle);
       }
 
       magnitude[k] = Math.sqrt(realSum * realSum + imagSum * imagSum) / fftSize;
-      phase[k] = Math.atan2(imagSum, realSum);
     }
 
     // Draw spectrum
     const width = canvas.width;
     const height = canvas.height;
-    const halfHeight = height / 2;
 
     // Draw grid
     ctx.strokeStyle = '#444';
@@ -91,59 +88,20 @@
       }
     }
 
-    if (showPhase) {
-      // Draw phase response
-      ctx.strokeStyle = '#ff6b6b';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
+    // Draw magnitude spectrum as bars
+    const barWidth = width / (fftSize / 2);
+    const maxMag = Math.max(...magnitude);
 
-      for (let i = 0; i < magnitude.length; i++) {
-        const x = (i / magnitude.length) * width;
-        const y = halfHeight - (phase[i] / Math.PI) * halfHeight * 0.8;
+    for (let i = 0; i < magnitude.length; i++) {
+      const x = i * barWidth;
+      const normalized = magnitude[i] / (maxMag || 1);
+      const dbValue = 20 * Math.log10(normalized + 0.0001);
+      const barHeight = ((dbValue + 60) / 60) * height;
 
-        if (i === 0) {
-          ctx.moveTo(x, y);
-        } else {
-          ctx.lineTo(x, y);
-        }
-      }
-      ctx.stroke();
-
-      // Draw magnitude response
-      ctx.strokeStyle = '#4ecdc4';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-
-      const maxMag = Math.max(...magnitude);
-      for (let i = 0; i < magnitude.length; i++) {
-        const x = (i / magnitude.length) * width;
-        const normalized = magnitude[i] / (maxMag || 1);
-        const dbValue = 20 * Math.log10(normalized + 0.0001);
-        const y = height - ((dbValue + 60) / 60) * halfHeight;
-
-        if (i === 0) {
-          ctx.moveTo(x, y);
-        } else {
-          ctx.lineTo(x, y);
-        }
-      }
-      ctx.stroke();
-    } else {
-      // Draw magnitude spectrum as bars
-      const barWidth = width / (fftSize / 2);
-      const maxMag = Math.max(...magnitude);
-
-      for (let i = 0; i < magnitude.length; i++) {
-        const x = i * barWidth;
-        const normalized = magnitude[i] / (maxMag || 1);
-        const dbValue = 20 * Math.log10(normalized + 0.0001);
-        const barHeight = ((dbValue + 60) / 60) * height;
-
-        // Color gradient based on frequency
-        const hue = (i / magnitude.length) * 280;
-        ctx.fillStyle = `hsl(${hue}, 70%, 50%)`;
-        ctx.fillRect(x, height - barHeight, barWidth - 1, barHeight);
-      }
+      // Color gradient based on frequency
+      const hue = (i / magnitude.length) * 280;
+      ctx.fillStyle = `hsl(${hue}, 70%, 50%)`;
+      ctx.fillRect(x, height - barHeight, barWidth - 1, barHeight);
     }
 
     // Draw labels
@@ -182,18 +140,6 @@
           <option value={option.value}>{option.label}</option>
         {/each}
       </select>
-    </div>
-
-    <div class="form-control">
-      <label class="label cursor-pointer gap-2">
-        <span class="label-text">显示相位</span>
-        <input
-          type="checkbox"
-          class="toggle toggle-primary toggle-sm"
-          bind:checked={showPhase}
-          onchange={analyzeSpectrum}
-        />
-      </label>
     </div>
 
     <button class="btn btn-primary btn-sm" onclick={analyzeSpectrum}>
