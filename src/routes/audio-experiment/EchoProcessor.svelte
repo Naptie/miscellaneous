@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
+
   interface Props {
     audioContext: AudioContext | null;
     audioBuffer: AudioBuffer | null;
@@ -92,9 +94,9 @@
 
   function applyEcho() {
     if (echoType === 'comb') {
-      applyCombFilterEcho();
+      untrack(() => applyCombFilterEcho());
     } else {
-      applyAllpassFilterEcho();
+      untrack(() => applyAllpassFilterEcho());
     }
   }
 
@@ -175,10 +177,6 @@
         <h3 class="card-title">回声算法选择</h3>
         <div class="form-control">
           <label class="label cursor-pointer">
-            <span class="label-text">
-              <div class="font-semibold">梳状滤波器 (Comb Filter)</div>
-              <div class="text-xs opacity-70">y(n) = x(n) + α·x(n-R)</div>
-            </span>
             <input
               type="radio"
               name="echo-type"
@@ -187,14 +185,14 @@
               bind:group={echoType}
               onchange={applyEcho}
             />
+            <span class="label-text">
+              <div class="font-semibold">梳状滤波器 (Comb Filter)</div>
+              <div class="text-xs opacity-70">y(n) = x(n) + α·x(n-R)</div>
+            </span>
           </label>
         </div>
         <div class="form-control">
           <label class="label cursor-pointer">
-            <span class="label-text">
-              <div class="font-semibold">全通滤波器 (All-pass Filter)</div>
-              <div class="text-xs opacity-70">H(z) = (α + z⁻ᴿ) / (1 + α·z⁻ᴿ)</div>
-            </span>
             <input
               type="radio"
               name="echo-type"
@@ -203,6 +201,10 @@
               bind:group={echoType}
               onchange={applyEcho}
             />
+            <span class="label-text">
+              <div class="font-semibold">全通滤波器 (All-pass Filter)</div>
+              <div class="text-xs opacity-70">H(z) = (α + z⁻ᴿ) / (1 + α·z⁻ᴿ)</div>
+            </span>
           </label>
         </div>
       </div>
@@ -226,14 +228,8 @@
             step="0.01"
             bind:value={echoDelay}
             oninput={applyEcho}
-            class="range range-primary"
+            class="range range-primary w-full"
           />
-          <div class="flex w-full justify-between px-2 text-xs">
-            <span>50ms</span>
-            <span>250ms</span>
-            <span>500ms</span>
-            <span>1000ms</span>
-          </div>
         </div>
 
         <div class="form-control">
@@ -249,7 +245,7 @@
             step="0.01"
             bind:value={echoDecay}
             oninput={applyEcho}
-            class="range range-secondary"
+            class="range range-secondary w-full"
           />
           <div class="text-xs opacity-70">α 必须小于 1 以保证系统稳定性</div>
         </div>

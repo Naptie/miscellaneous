@@ -193,7 +193,7 @@
     </div>
   </div>
 
-  <div class="stats stats-vertical lg:stats-horizontal shadow">
+  <div class="stats stats-vertical lg:stats-horizontal w-full shadow">
     <div class="stat">
       <div class="stat-title">FFT大小</div>
       <div class="stat-value text-2xl">{fftSize}</div>

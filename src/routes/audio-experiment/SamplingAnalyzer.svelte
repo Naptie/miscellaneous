@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte';
+
   interface Props {
     audioContext: AudioContext | null;
     audioBuffer: AudioBuffer | null;
@@ -111,6 +113,10 @@
     if (audioBuffer) {
       resampleAudio();
     }
+  });
+
+  onDestroy(() => {
+    stopPlayback();
   });
 </script>
 

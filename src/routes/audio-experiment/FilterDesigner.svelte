@@ -162,7 +162,7 @@
         <h3 class="card-title">添加噪声信号</h3>
         <p class="text-base-content/70 text-sm">模拟50Hz工频干扰或其他单频噪声</p>
 
-        <div class="form-control">
+        <div class="form-control gap-2">
           <label class="label" for="noise-frequency">
             <span class="label-text">噪声频率 (Hz)</span>
             <span class="label-text-alt">{noiseFrequency} Hz</span>
@@ -174,17 +174,11 @@
             max="100"
             step="1"
             bind:value={noiseFrequency}
-            class="range range-primary"
+            class="range range-primary w-full"
           />
-          <div class="flex w-full justify-between px-2 text-xs">
-            <span>30Hz</span>
-            <span>50Hz</span>
-            <span>60Hz</span>
-            <span>100Hz</span>
-          </div>
         </div>
 
-        <div class="form-control">
+        <div class="form-control gap-2">
           <label class="label" for="noise-amplitude">
             <span class="label-text">噪声幅度</span>
             <span class="label-text-alt">{(noiseAmplitude * 100).toFixed(0)}%</span>
@@ -196,7 +190,7 @@
             max="0.5"
             step="0.01"
             bind:value={noiseAmplitude}
-            class="range range-secondary"
+            class="range range-secondary w-full"
           />
         </div>
 
@@ -274,7 +268,7 @@
               step="0.1"
               bind:value={filterQ}
               oninput={applyFilter}
-              class="range range-accent"
+              class="range range-accent w-full"
             />
             <div class="text-xs opacity-70">Q值越高，滤波器带宽越窄，选择性越强</div>
           </div>
