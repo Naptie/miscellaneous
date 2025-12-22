@@ -307,9 +307,9 @@
         <h3 class="card-title">频率响应曲线</h3>
         <div class="bg-base-300 flex h-64 items-end justify-around gap-1 p-4">
           {#each eqBands as band, index (band.frequency)}
-            <div class="flex flex-col items-center gap-1">
+            <div class="flex h-full flex-col items-center justify-end gap-1">
               <div
-                class="{getBandColorClass(index)} w-8 transition-all duration-300"
+                class="{getBandColorClass(index)} w-8 transition-all duration-100"
                 style="height: {((band.gain + 12) / 24) * 100}%"
               ></div>
               <div class="text-xs">
