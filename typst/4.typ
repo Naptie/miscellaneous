@@ -697,21 +697,17 @@ src/routes/audio-experiment/
 
 == 实验数据
 
-// 以下位置需要插入截图
-
 === 录音与上传界面
 
 #figure(
-  // TODO: 插入录音界面截图
-  // 截图应包含：录音按钮、文件上传、音频波形、采样率/时长/声道数显示
+  image("/assets/image.png"),
   caption: [录音与上传功能界面]
 )
 
 === 采样率对比实验
 
 #figure(
-  // TODO: 插入采样率对比截图
-  // 截图应包含：原始音频信息、重采样参数设置、对比播放按钮
+  image("/assets/image-1.png"),
   caption: [采样率与量化级数调整界面]
 )
 
@@ -736,8 +732,7 @@ src/routes/audio-experiment/
 === 滤波器去噪实验
 
 #figure(
-  // TODO: 插入滤波器界面截图
-  // 截图应包含：噪声注入参数、滤波器类型选择、Q值调节、对比播放
+  image("/assets/image-2.png"),
   caption: [50Hz 噪声注入与带阻滤波器去噪界面]
 )
 
@@ -759,8 +754,7 @@ src/routes/audio-experiment/
 === 回声效果对比
 
 #figure(
-  // TODO: 插入回声处理界面截图
-  // 截图应包含：算法选择、延迟时间/衰减系数调节、算法对比表格
+  image("/assets/image-3.png"),
   caption: [梳状滤波器与全通滤波器回声效果对比界面]
 )
 
@@ -785,8 +779,7 @@ src/routes/audio-experiment/
 === 参数均衡器效果
 
 #figure(
-  // TODO: 插入均衡器界面截图
-  // 截图应包含：9 频段控制、预设选择、频率响应曲线可视化
+  image("/assets/image-4.png"),
   caption: [9 频段参数均衡器界面与频率响应曲线]
 )
 
@@ -811,8 +804,7 @@ src/routes/audio-experiment/
 === 频谱分析
 
 #figure(
-  // TODO: 插入频谱分析器截图
-  // 截图应包含：FFT 大小选择、频谱柱状图、频率刻度标注
+  image("/assets/image-5.png"),
   caption: [音频频谱分析器（FFT 大小：2048）]
 )
 
@@ -835,7 +827,7 @@ src/routes/audio-experiment/
 
 3. *量化效果*：16bit 量化级数提供约 96dB 的动态范围，足以覆盖人耳听觉范围。低于 12bit 时，量化噪声可听且影响音质。
 
-### 滤波器性能分析
+=== 滤波器性能分析
 
 带阻滤波器成功去除了 50Hz 工频噪声，实验验证了以下要点：
 
