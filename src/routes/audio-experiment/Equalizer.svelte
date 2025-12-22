@@ -137,17 +137,47 @@
     isPlaying = null;
   }
 
-  function getBandColor(index: number): string {
+  function getBandColorClass(index: number): string {
     const colors = [
-      'primary',
-      'secondary',
-      'accent',
-      'info',
-      'success',
-      'warning',
-      'error',
-      'primary',
-      'secondary'
+      'bg-primary',
+      'bg-secondary',
+      'bg-accent',
+      'bg-info',
+      'bg-success',
+      'bg-warning',
+      'bg-error',
+      'bg-primary',
+      'bg-secondary'
+    ];
+    return colors[index % colors.length];
+  }
+
+  function getBandToggleClass(index: number): string {
+    const colors = [
+      'toggle-primary',
+      'toggle-secondary',
+      'toggle-accent',
+      'toggle-info',
+      'toggle-success',
+      'toggle-warning',
+      'toggle-error',
+      'toggle-primary',
+      'toggle-secondary'
+    ];
+    return colors[index % colors.length];
+  }
+
+  function getBandRangeClass(index: number): string {
+    const colors = [
+      'range-primary',
+      'range-secondary',
+      'range-accent',
+      'range-info',
+      'range-success',
+      'range-warning',
+      'range-error',
+      'range-primary',
+      'range-secondary'
     ];
     return colors[index % colors.length];
   }
@@ -215,7 +245,7 @@
                   </h4>
                   <input
                     type="checkbox"
-                    class="toggle toggle-{getBandColor(index)} toggle-sm"
+                    class="toggle {getBandToggleClass(index)} toggle-sm"
                     bind:checked={band.enabled}
                     onchange={applyEqualizer}
                   />
@@ -234,7 +264,7 @@
                     step="0.5"
                     bind:value={band.gain}
                     oninput={applyEqualizer}
-                    class="range range-{getBandColor(index)} range-xs"
+                    class="range {getBandRangeClass(index)} range-xs"
                     disabled={!band.enabled}
                   />
                 </div>
@@ -252,7 +282,7 @@
                     step="0.1"
                     bind:value={band.q}
                     oninput={applyEqualizer}
-                    class="range range-{getBandColor(index)} range-xs"
+                    class="range {getBandRangeClass(index)} range-xs"
                     disabled={!band.enabled}
                   />
                 </div>
@@ -279,7 +309,7 @@
           {#each eqBands as band, index (band.frequency)}
             <div class="flex flex-col items-center gap-1">
               <div
-                class="w-8 bg-{getBandColor(index)} transition-all duration-300"
+                class="{getBandColorClass(index)} w-8 transition-all duration-300"
                 style="height: {((band.gain + 12) / 24) * 100}%"
               ></div>
               <div class="text-xs">
